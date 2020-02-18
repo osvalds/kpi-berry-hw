@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import axios from 'axios'
-import ConditionBuilder from "./ConditionBuilder";
+import ConditionBuilderWrapper from "./ConditionBuilder";
 import "antd/dist/antd.css";
 import logo from "./logo.png"
 import './App.scss';
@@ -26,7 +26,7 @@ const App = () => {
                      className="header__image"
                      alt="KPI BERRY logo"/>
             </div>
-            <ConditionBuilder enums={enums}/>
+            <ConditionBuilderWrapper enums={enums}/>
         </div>
     );
 

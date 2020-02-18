@@ -1,5 +1,5 @@
 import React from "react";
-import {Table} from "antd"
+import {Spin, Table} from "antd"
 
 const columns = [
     {
@@ -28,14 +28,19 @@ const columns = [
 
     },
     {
-        title: "Marketing communication",
-        dataIndex: "marketing_coms",
+        title: "Marketing consent",
+        dataIndex: "merketing_consent",
         render: consentGiven => consentGiven ? "Yes" : "No"
     }
 ];
 
 const SearchResults = ({results}) => {
-    return <Table dataSource={results} columns={columns} rowKey="id"/>
+    if (Object.keys(results).length !== 0) {
+        return <Table dataSource={results} columns={columns} rowKey="id"/>
+    } else {
+        return <Spin size="large"/>
+    }
+
 };
 
 export default SearchResults
