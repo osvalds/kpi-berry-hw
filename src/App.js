@@ -1,42 +1,35 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, {useState, useEffect} from 'react';
+import axios from 'axios'
+import ConditionBuilder from "./ConditionBuilder";
+import "antd/dist/antd.css";
+import logo from "./logo.png"
+import './App.scss';
 
-class App extends  Component {
-  state = {
-    enums: null
-  }
+const App = () => {
+    const [enums, setEnums] = useState({});
 
-  componentDidMount() {
-    fetch('http://localhost:5000/api/enums')
-        .then(res => res.json())
-        .then((data) => {
-          console.log(data);
-          this.setState({ enums: data })
-        })
-        .catch(console.log)
-  }
+    useEffect(() => {
+        const fetchEnums = async () => {
+            const result = await axios(
+                'http://localhost:5000/api/enums'
+            );
+            setEnums(result.data);
+        };
+        fetchEnums();
+    }, []);
 
-  render() {
+
     return (
         <div className="App">
-          <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
-            <p>
-              Edit <code>src/App.js</code> and save to reload.
-            </p>
-            <a
-                className="App-link"
-                href="https://reactjs.org"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-              Learn React
-            </a>
-          </header>
+            <div className="header">
+                <img src={logo}
+                     className="header__image"
+                     alt="KPI BERRY logo"/>
+            </div>
+            <ConditionBuilder enums={enums}/>
         </div>
     );
 
-  }
-}
+};
+
 export default App;
