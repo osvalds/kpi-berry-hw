@@ -1,9 +1,10 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {Slider, Select, Spin} from "antd"
+import {Spin} from "antd"
 import SearchResults from "./SearchResults";
+import QueryRow from "./QueryRow";
 
-const staticConditions = [
+const staticProperties = [
     {
         type: "range",
         name: "age",
@@ -20,8 +21,17 @@ const staticConditions = [
 
 const ConditionBuilder = ({enums}) => {
     const [customers, setCustomers] = useState({});
-    const availableConditions = staticConditions.concat(enums);
-    console.log(availableConditions);
+    // eslint-disable-next-line
+    const [customerQuery, setCustomerQuery] = useState({
+        logicalOperator: "or",
+        conditions: [{
+            property: null,
+            equality: 1,
+            propertyValue: null
+        }]
+    });
+
+    const availableProperties = staticProperties.concat(enums);
 
     useEffect(() => {
         const fetchCustomers = async () => {
@@ -33,26 +43,33 @@ const ConditionBuilder = ({enums}) => {
         fetchCustomers();
     }, []);
 
+    let handlePropertyChange = (index, selectedProperty) => {
+        customerQuery.conditions[index].property = selectedProperty;
+        // this returns a new value which will re-render the component. Major TIL.
+        setCustomerQuery({...customerQuery});
+    };
+
+    let handleEqualityChange = (index, selectedEquality) => {
+        customerQuery.conditions[index].equality = selectedEquality;
+        // this returns a new value which will re-render the component. Major TIL.
+        setCustomerQuery({...customerQuery});
+    };
+
     if (Object.keys(enums).length !== 0) {
         return (
             <div>
                 <div>
                     Select...
                 </div>
-                <Select
-                    style={{width: 240}}
-                    placeholder="Property"
-                >
-                    {availableConditions.map(condition => (
-                        <Select.Option key={condition.name}
-                                       value={condition.name}>
-                            {condition.optionName}
-                        </Select.Option>
-                    ))}
-                </Select>
+                {customerQuery.conditions.map((condition, index) => (
+                    <QueryRow key={index}
+                              availableProperties={availableProperties}
+                              onPropertyChange={(e) => handlePropertyChange(index, e)}
+                              onEqualityChange={(e) => handleEqualityChange(index, e)}
+                              condition={condition}/>
+                ))}
 
-                <Slider/>
-                {JSON.stringify(enums)}
+
                 <SearchResults results={customers}/>
             </div>)
     } else {
