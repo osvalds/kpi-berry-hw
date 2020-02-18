@@ -14,7 +14,7 @@ const columns = [
     {
         title: "Gender",
         dataIndex: "gender",
-        render: gender => gender || "---"
+        render:  gender => gender ? gender.toUpperCase() : "---"
     },
     {
         title: "Language",
@@ -24,13 +24,13 @@ const columns = [
     {
         title: "Channel",
         dataIndex: "channel",
-        render: channel => channel? channel.toUpperCase() : "---"
+        render: channel => channel ? channel.toUpperCase() : "---"
 
     },
     {
         title: "Marketing consent",
         dataIndex: "merketing_consent",
-        render: consentGiven => consentGiven ? "Yes" : "No"
+        render: consentGiven => consentGiven ? "True" : "False"
     }
 ];
 

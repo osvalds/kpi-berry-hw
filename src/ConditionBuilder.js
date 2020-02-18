@@ -45,13 +45,23 @@ const ConditionBuilder = ({enums}) => {
 
     let handlePropertyChange = (index, selectedProperty) => {
         customerQuery.conditions[index].property = selectedProperty;
+        if( selectedProperty === "age" ) {
+            customerQuery.conditions[index].propertyValue = [18, 35];
+        } else {
+            customerQuery.conditions[index].propertyValue = null;
+        }
+
         // this returns a new value which will re-render the component. Major TIL.
         setCustomerQuery({...customerQuery});
     };
 
     let handleEqualityChange = (index, selectedEquality) => {
         customerQuery.conditions[index].equality = selectedEquality;
-        // this returns a new value which will re-render the component. Major TIL.
+        setCustomerQuery({...customerQuery});
+    };
+
+    let handleValueChange = (index, selectedValue) => {
+        customerQuery.conditions[index].propertyValue = selectedValue;
         setCustomerQuery({...customerQuery});
     };
 
@@ -66,6 +76,7 @@ const ConditionBuilder = ({enums}) => {
                               availableProperties={availableProperties}
                               onPropertyChange={(e) => handlePropertyChange(index, e)}
                               onEqualityChange={(e) => handleEqualityChange(index, e)}
+                              onValueChange={(e) => handleValueChange(index, e)}
                               condition={condition}/>
                 ))}
 

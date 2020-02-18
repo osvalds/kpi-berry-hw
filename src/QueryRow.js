@@ -57,9 +57,53 @@ const RenderEqualitySelect = ({condition, availableProperties, onEqualityChange}
     }
 };
 
+const getValueOptions = (selectedProperty, availableProperties) => {
+    const selectedAvailableProp = availableProperties.filter(item => (
+        item.name === selectedProperty
+    ))[0];
 
+    switch (selectedAvailableProp.type) {
+        case "enum":
+            return selectedAvailableProp.values.map(item => ({value: item, text: item.toUpperCase()}));
+        case "boolean":
+            return [{value: 1, text: "True"}, {value: 0, text: "False"}];
+        default:
+            return []
 
-const QueryRow = ({availableProperties, condition, onPropertyChange, onEqualityChange}) => {
+    }
+};
+
+const RenderValueSelect = ({condition, availableProperties, onValueChange}) => {
+    if (!condition.property) {
+        return null;
+    } else if (condition.property === "age") {
+        return (
+            <Slider range={true}
+                    tooltipVisible={true}
+                    onChange={onValueChange}
+                    defaultValue={condition.propertyValue}/>
+        )
+    } else {
+        return (
+            <Select
+                style={{width: 240}}
+                value={condition.propertyValue != null ? condition.propertyValue : undefined}
+                onChange={onValueChange}
+                placeholder="Value"
+            >
+                {getValueOptions(condition.property, availableProperties).map(item => (
+                    <Select.Option key={item.text}
+                                   value={item.value}>
+                        {item.text}
+                    </Select.Option>
+                ))}
+            </Select>
+        )
+    }
+};
+
+const QueryRow = ({availableProperties, condition, onPropertyChange, onEqualityChange, onValueChange}) => {
+    console.log(condition);
     return (
         <div>
             <Select
@@ -79,6 +123,9 @@ const QueryRow = ({availableProperties, condition, onPropertyChange, onEqualityC
             <RenderEqualitySelect condition={condition}
                                   availableProperties={availableProperties}
                                   onEqualityChange={onEqualityChange}/>
+            <RenderValueSelect condition={condition}
+                               availableProperties={availableProperties}
+                               onValueChange={onValueChange}/>
         </div>
     )
 
