@@ -64,7 +64,11 @@ const getValueOptions = (selectedProperty, availableProperties) => {
 
     switch (selectedAvailableProp.type) {
         case "enum":
-            return selectedAvailableProp.values.map(item => ({value: item, text: item.toUpperCase()}));
+            return selectedAvailableProp.values.map(item => ({value: item, text: item.toUpperCase()}))
+                .concat({
+                    value: "none",
+                    text: "---"
+                });
         case "boolean":
             return [{value: 1, text: "True"}, {value: 0, text: "False"}, {value: "none", text: "---"}];
         default:
