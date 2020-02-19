@@ -1,0 +1,18 @@
+.query-row {
+  margin-bottom: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 32px;
+  grid-column-end: 4;
+  grid-column-gap: 12px;
+  align-items: center;
+
+  &__select {
+    width: 100%;
+  }
+
+  &__remove {
+    margin-left: auto;
+    //always force remove button to the last column
+    grid-column: 4;
+  }
+}

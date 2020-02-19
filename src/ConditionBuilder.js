@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, Fragment} from "react";
 import axios from "axios";
 import {Button, Spin} from "antd"
 import SearchResults from "./SearchResults";
@@ -107,25 +107,27 @@ const ConditionBuilder = ({enums}) => {
     };
 
     return (
-        <div>
-            <div>
-                Select...
-            </div>
-            {conditions.map((condition, index) => {
-                return <QueryRow key={index}
-                                 availableProperties={availableProperties}
-                                 onPropertyChange={handlePropertyChange(index)}
-                                 onEqualityChange={handleEqualityChange(index)}
-                                 onValueChange={handleValueChange(index)}
-                                 condition={condition}
-                                 onRemove={conditions.length > 1 ? () => onRemove(index) : null}/>
-            })}
+        <Fragment>
+            <div className="condition-builder">
+                <div className="condition-builder__title">
+                    Select...
+                </div>
+                {conditions.map((condition, index) => {
+                    return <QueryRow key={index}
+                                     availableProperties={availableProperties}
+                                     onPropertyChange={handlePropertyChange(index)}
+                                     onEqualityChange={handleEqualityChange(index)}
+                                     onValueChange={handleValueChange(index)}
+                                     condition={condition}
+                                     onRemove={conditions.length > 1 ? () => onRemove(index) : null}/>
+                })}
 
-            <Button type="primary" onClick={addCondition} disabled={!allConditionsFilled(conditions)}>
-                Add Condition
-            </Button>
+                <Button type="primary" onClick={addCondition} disabled={!allConditionsFilled(conditions)}>
+                    Add Condition
+                </Button>
+            </div>
             <SearchResults results={customers}/>
-        </div>)
+        </Fragment>)
 };
 
 const ConditionBuilderWrapper = ({enums}) => {

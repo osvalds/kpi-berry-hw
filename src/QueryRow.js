@@ -35,11 +35,11 @@ const getEqualityOptions = (selectedProperty, availableProperties) => {
     }
 };
 
-const RenderEqualitySelect = ({condition, availableProperties, onEqualityChange}) => {
+const EqualitySelect = ({condition, availableProperties, onEqualityChange}) => {
     if (condition.property) {
         return (
             <Select
-                style={{width: 240}}
+                className="query-row__select"
                 value={condition.equality}
                 onChange={onEqualityChange}
                 placeholder="Equality"
@@ -73,20 +73,19 @@ const getValueOptions = (selectedProperty, availableProperties) => {
     }
 };
 
-const RenderValueSelect = ({condition, availableProperties, onValueChange}) => {
+const ValueSelect = ({condition, availableProperties, onValueChange}) => {
     if (!condition.property) {
         return null;
     } else if (condition.property === "age") {
         return (
             <Slider range={true}
-                    tooltipVisible={true}
-                    onChange={onValueChange}
+                    onAfterChange={onValueChange}
                     defaultValue={condition.propertyValue}/>
         )
     } else {
         return (
             <Select
-                style={{width: 240}}
+                className="query-row__select"
                 value={condition.propertyValue != null ? condition.propertyValue : undefined}
                 onChange={onValueChange}
                 placeholder="Value"
@@ -104,9 +103,9 @@ const RenderValueSelect = ({condition, availableProperties, onValueChange}) => {
 
 const QueryRow = ({availableProperties, condition, onPropertyChange, onEqualityChange, onValueChange, onRemove}) => {
     return (
-        <div>
+        <div className="query-row">
             <Select
-                style={{width: 240}}
+                className="query-row__select"
                 placeholder="Property"
                 // select element's placeholder works only with undefined
                 value={condition.property ? condition.property : undefined}
@@ -120,17 +119,15 @@ const QueryRow = ({availableProperties, condition, onPropertyChange, onEqualityC
                 ))}
             </Select>
 
-            <RenderEqualitySelect condition={condition}
-                                  availableProperties={availableProperties}
-                                  onEqualityChange={onEqualityChange}/>
+            <EqualitySelect condition={condition}
+                            availableProperties={availableProperties}
+                            onEqualityChange={onEqualityChange}/>
 
-            <RenderValueSelect condition={condition}
-                               availableProperties={availableProperties}
-                               onValueChange={onValueChange}/>
+            <ValueSelect condition={condition}
+                         availableProperties={availableProperties}
+                         onValueChange={onValueChange}/>
             {onRemove !== null ? (
-                <Button onClick={onRemove}>
-                    Remove
-                </Button>
+                <Button onClick={onRemove} icon="close" className="query-row__remove" shape="circle"/>
             ) : null}
         </div>
     )
