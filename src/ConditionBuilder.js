@@ -113,8 +113,13 @@ const ConditionBuilder = ({enums}) => {
 
     let onRemove = index => {
         let nConditions = [...conditions];
-        nConditions.splice(index, 1)
-        setConditions(nConditions)
+        nConditions.splice(index, 1);
+
+        if (nConditions.length === 0) {
+            setConditions([blankCondition])
+        } else {
+            setConditions(nConditions)
+        }
     };
 
     let onLogicalOperatorChange = val => {
@@ -155,7 +160,7 @@ const ConditionBuilder = ({enums}) => {
                                          onEqualityChange={handleEqualityChange(index)}
                                          onValueChange={handleValueChange(index)}
                                          condition={condition}
-                                         onRemove={conditions.length > 1 ? () => onRemove(index) : null}/>
+                                         onRemove={() => onRemove(index)}/>
                     })}
                     <div className="search-button">
                         <Button

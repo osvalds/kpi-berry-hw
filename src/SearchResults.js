@@ -14,7 +14,7 @@ const columns = [
     {
         title: "Gender",
         dataIndex: "gender",
-        render:  gender => gender ? gender.toUpperCase() : "---"
+        render: gender => gender ? gender.toUpperCase() : "---"
     },
     {
         title: "Language",
@@ -36,7 +36,10 @@ const columns = [
 
 const SearchResults = ({results}) => {
     if (Object.keys(results).length !== 0) {
-        return <Table dataSource={results} columns={columns} rowKey="id"/>
+        return <Table title={() => `Totals results: ${results.length}`}
+                      dataSource={results}
+                      columns={columns}
+                      rowKey="id"/>
     } else {
         return <Spin size="large"/>
     }
