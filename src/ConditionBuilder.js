@@ -28,9 +28,8 @@ const blankCondition = {
 const ConditionBuilder = ({enums}) => {
     const [customers, setCustomers] = useState({});
     const [logicalOperator, setLogicalOperator] = useState("or");
-    const [conditions, setConditions] = useState([blankCondition, blankCondition]);
+    const [conditions, setConditions] = useState([blankCondition]);
 
-    // console.log("customer query default", customerQuery);
     const availableProperties = staticProperties.concat(enums);
 
     useEffect(() => {
@@ -88,9 +87,17 @@ const ConditionBuilder = ({enums}) => {
         setConditions(nConditions);
     };
 
-    let addCondition = (evt) => {
+    let addCondition = () => {
         let nConditions = [...conditions];
         setConditions(nConditions.concat(blankCondition))
+    };
+
+    const allConditionsFilled = (conditions) => {
+        return conditions.every(condition => (
+            condition.propertyValue !== null &&
+            condition.equality !== null &&
+            condition.property !== null
+        ))
     };
 
     return (
@@ -107,7 +114,7 @@ const ConditionBuilder = ({enums}) => {
                                  condition={condition}/>
             })}
 
-            <Button type="primary" onClick={(e) => addCondition(e)}>
+            <Button type="primary" onClick={addCondition} disabled={!allConditionsFilled(conditions)}>
                 Add Condition
             </Button>
             <SearchResults results={customers}/>
