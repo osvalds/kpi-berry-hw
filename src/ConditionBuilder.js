@@ -1,6 +1,6 @@
 import React, {useEffect, useState, Fragment} from "react";
 import axios from "axios";
-import {Button, Spin} from "antd"
+import {Button, Select, Spin} from "antd"
 import SearchResults from "./SearchResults";
 import QueryRow from "./QueryRow";
 
@@ -16,6 +16,17 @@ const staticProperties = [
         type: "boolean",
         name: "marketing_consent",
         optionName: "Marketing Consent"
+    }
+];
+
+const logicalOperatorOpts = [
+    {
+        value: "or",
+        text: "OR"
+    },
+    {
+        value: "and",
+        text: "AND"
     }
 ];
 
@@ -106,25 +117,56 @@ const ConditionBuilder = ({enums}) => {
         setConditions(nConditions)
     };
 
+    let onLogicalOperatorChange = val => {
+        setLogicalOperator(val);
+    };
+
     return (
         <Fragment>
-            <div className="condition-builder">
+            <div
+                className={`condition-builder ${conditions.length > 1 ? 'condition-builder--la-fleur' : ''}
+                ${allConditionsFilled(conditions) ? 'condition-builder--logic-active' : ''}
+                `}>
                 <div className="condition-builder__title">
                     Select...
                 </div>
-                {conditions.map((condition, index) => {
-                    return <QueryRow key={index}
-                                     availableProperties={availableProperties}
-                                     onPropertyChange={handlePropertyChange(index)}
-                                     onEqualityChange={handleEqualityChange(index)}
-                                     onValueChange={handleValueChange(index)}
-                                     condition={condition}
-                                     onRemove={conditions.length > 1 ? () => onRemove(index) : null}/>
-                })}
+                <div className="condition-builder__wrapper">
+                    {conditions.length > 1 ? (
+                        <Select
+                            className="condition-builder__logic-select"
+                            placeholder="Property"
+                            value={logicalOperator}
+                            disabled={!allConditionsFilled(conditions)}
+                            onChange={onLogicalOperatorChange}
+                        >
+                            {logicalOperatorOpts.map(item => (
+                                <Select.Option key={item.text}
+                                               value={item.value}>
+                                    {item.text}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    ) : null}
 
-                <Button type="primary" onClick={addCondition} disabled={!allConditionsFilled(conditions)}>
-                    Add Condition
-                </Button>
+                    {conditions.map((condition, index) => {
+                        return <QueryRow key={index}
+                                         availableProperties={availableProperties}
+                                         onPropertyChange={handlePropertyChange(index)}
+                                         onEqualityChange={handleEqualityChange(index)}
+                                         onValueChange={handleValueChange(index)}
+                                         condition={condition}
+                                         onRemove={conditions.length > 1 ? () => onRemove(index) : null}/>
+                    })}
+                    <div className="search-button">
+                        <Button
+                            type="primary"
+                            onClick={addCondition}
+                            disabled={!allConditionsFilled(conditions)}
+                            icon="plus">
+                            Add Condition
+                        </Button>
+                    </div>
+                </div>
             </div>
             <SearchResults results={customers}/>
         </Fragment>)

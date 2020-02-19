@@ -126,9 +126,7 @@ const QueryRow = ({availableProperties, condition, onPropertyChange, onEqualityC
             <ValueSelect condition={condition}
                          availableProperties={availableProperties}
                          onValueChange={onValueChange}/>
-            {onRemove !== null ? (
-                <Button onClick={onRemove} icon="close" className="query-row__remove" shape="circle"/>
-            ) : null}
+            <Button disabled={onRemove === null} onClick={onRemove} icon="close" className="query-row__remove"/>
         </div>
     )
 
