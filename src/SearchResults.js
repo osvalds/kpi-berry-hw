@@ -29,8 +29,8 @@ const columns = [
     },
     {
         title: "Marketing consent",
-        dataIndex: "merketing_consent",
-        render: consentGiven => consentGiven ? "True" : "False"
+        dataIndex: "marketing_consent",
+        render: consentGiven => consentGiven == null ? "---" : (consentGiven ? "True" : "False")
     }
 ];
 
