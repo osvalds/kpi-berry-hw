@@ -103,7 +103,6 @@ const RenderValueSelect = ({condition, availableProperties, onValueChange}) => {
 };
 
 const QueryRow = ({availableProperties, condition, onPropertyChange, onEqualityChange, onValueChange}) => {
-    console.log(condition);
     return (
         <div>
             <Select
@@ -120,9 +119,11 @@ const QueryRow = ({availableProperties, condition, onPropertyChange, onEqualityC
                     </Select.Option>
                 ))}
             </Select>
+
             <RenderEqualitySelect condition={condition}
                                   availableProperties={availableProperties}
                                   onEqualityChange={onEqualityChange}/>
+
             <RenderValueSelect condition={condition}
                                availableProperties={availableProperties}
                                onValueChange={onValueChange}/>

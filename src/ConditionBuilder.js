@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {Spin} from "antd"
+import {Button, Spin} from "antd"
 import SearchResults from "./SearchResults";
 import QueryRow from "./QueryRow";
 
@@ -19,73 +19,99 @@ const staticProperties = [
     }
 ];
 
+const blankCondition = {
+    property: null,
+    equality: 1,
+    propertyValue: null
+};
+
 const ConditionBuilder = ({enums}) => {
     const [customers, setCustomers] = useState({});
-    // eslint-disable-next-line
-    const [customerQuery, setCustomerQuery] = useState({
-        logicalOperator: "or",
-        conditions: [{
-            property: null,
-            equality: 1,
-            propertyValue: null
-        }]
-    });
+    const [logicalOperator, setLogicalOperator] = useState("or");
+    const [conditions, setConditions] = useState([blankCondition, blankCondition]);
 
+    // console.log("customer query default", customerQuery);
     const availableProperties = staticProperties.concat(enums);
 
     useEffect(() => {
         const fetchCustomers = async () => {
             const result = await axios(
-                'http://localhost:5000/api/q'
-            );
+                {
+                    method: "post",
+                    url: "http://localhost:5000/api/q",
+                    data: {
+                        logicalOperator: logicalOperator,
+                        conditions: conditions
+                    }
+                })
+            ;
             setCustomers(result.data);
         };
         fetchCustomers();
-    }, []);
+    }, [logicalOperator, conditions]);
 
-    let handlePropertyChange = (index, selectedProperty) => {
-        customerQuery.conditions[index].property = selectedProperty;
-        if( selectedProperty === "age" ) {
-            customerQuery.conditions[index].propertyValue = [18, 35];
+    let handlePropertyChange = index => selectedProperty => {
+        // Dealing with the shallow comparison bullshit from useState
+        // everything needs to be a new object because `mUtATiOnS`
+        let nConditions = [...conditions];
+        let nCondRow = {...nConditions[index]};
+
+        nCondRow.property = selectedProperty;
+
+        if (selectedProperty === "age") {
+            nCondRow.propertyValue = [18, 35];
         } else {
-            customerQuery.conditions[index].propertyValue = null;
+            nCondRow.propertyValue = null;
         }
 
-        // this returns a new value which will re-render the component. Major TIL.
-        setCustomerQuery({...customerQuery});
+        nConditions[index] = nCondRow;
+        setConditions(nConditions);
     };
 
-    let handleEqualityChange = (index, selectedEquality) => {
-        customerQuery.conditions[index].equality = selectedEquality;
-        setCustomerQuery({...customerQuery});
+    let handleEqualityChange = index => selectedEquality => {
+        let nConditions = [...conditions];
+        let nCondRow = {...nConditions[index]};
+
+        nCondRow.equality = selectedEquality;
+
+        nConditions[index] = nCondRow;
+        setConditions(nConditions);
     };
 
-    let handleValueChange = (index, selectedValue) => {
-        customerQuery.conditions[index].propertyValue = selectedValue;
-        setCustomerQuery({...customerQuery});
+    let handleValueChange = index => selectedValue => {
+        let nConditions = [...conditions];
+        let nCondRow = {...nConditions[index]};
+
+        nCondRow.propertyValue = selectedValue;
+
+        nConditions[index] = nCondRow;
+        setConditions(nConditions);
     };
 
-    if (Object.keys(enums).length !== 0) {
-        return (
+    let addCondition = (evt) => {
+        let nConditions = [...conditions];
+        setConditions(nConditions.concat(blankCondition))
+    };
+
+    return (
+        <div>
             <div>
-                <div>
-                    Select...
-                </div>
-                {customerQuery.conditions.map((condition, index) => (
-                    <QueryRow key={index}
-                              availableProperties={availableProperties}
-                              onPropertyChange={(e) => handlePropertyChange(index, e)}
-                              onEqualityChange={(e) => handleEqualityChange(index, e)}
-                              onValueChange={(e) => handleValueChange(index, e)}
-                              condition={condition}/>
-                ))}
+                Select...
+            </div>
+            {conditions.map((condition, index) => {
+                return <QueryRow key={index}
+                                 availableProperties={availableProperties}
+                                 onPropertyChange={handlePropertyChange(index)}
+                                 onEqualityChange={handleEqualityChange(index)}
+                                 onValueChange={handleValueChange(index)}
+                                 condition={condition}/>
+            })}
 
-
-                <SearchResults results={customers}/>
-            </div>)
-    } else {
-        return <Spin size="large"/>
-    }
+            <Button type="primary" onClick={(e) => addCondition(e)}>
+                Add Condition
+            </Button>
+            <SearchResults results={customers}/>
+        </div>)
 };
 
 const ConditionBuilderWrapper = ({enums}) => {

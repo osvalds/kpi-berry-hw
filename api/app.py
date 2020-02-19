@@ -22,12 +22,12 @@ available_enums = [{"type": "enum",
 
 @app.route('/api/enums')
 def enums():
-    time.sleep(1)
     return jsonify(available_enums)
 
 
-@app.route('/api/q')
+@app.route('/api/q', methods=['POST'])
 def customers():
+    print(request.data)
     SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
     json_url = os.path.join(SITE_ROOT, "static", "mock_data.json")
     data = json.load(open(json_url))
@@ -35,4 +35,4 @@ def customers():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True, port=5000)
