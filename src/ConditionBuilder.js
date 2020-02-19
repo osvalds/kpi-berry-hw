@@ -100,6 +100,12 @@ const ConditionBuilder = ({enums}) => {
         ))
     };
 
+    let onRemove = index => {
+        let nConditions = [...conditions];
+        nConditions.splice(index, 1)
+        setConditions(nConditions)
+    };
+
     return (
         <div>
             <div>
@@ -111,7 +117,8 @@ const ConditionBuilder = ({enums}) => {
                                  onPropertyChange={handlePropertyChange(index)}
                                  onEqualityChange={handleEqualityChange(index)}
                                  onValueChange={handleValueChange(index)}
-                                 condition={condition}/>
+                                 condition={condition}
+                                 onRemove={conditions.length > 1 ? () => onRemove(index) : null}/>
             })}
 
             <Button type="primary" onClick={addCondition} disabled={!allConditionsFilled(conditions)}>

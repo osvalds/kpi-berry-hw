@@ -1,5 +1,5 @@
 import React from "react"
-import {Select, Slider} from "antd";
+import {Button, Select, Slider} from "antd";
 
 const equalityOptions = {
     range: [
@@ -102,7 +102,7 @@ const RenderValueSelect = ({condition, availableProperties, onValueChange}) => {
     }
 };
 
-const QueryRow = ({availableProperties, condition, onPropertyChange, onEqualityChange, onValueChange}) => {
+const QueryRow = ({availableProperties, condition, onPropertyChange, onEqualityChange, onValueChange, onRemove}) => {
     return (
         <div>
             <Select
@@ -127,6 +127,11 @@ const QueryRow = ({availableProperties, condition, onPropertyChange, onEqualityC
             <RenderValueSelect condition={condition}
                                availableProperties={availableProperties}
                                onValueChange={onValueChange}/>
+            {onRemove !== null ? (
+                <Button onClick={onRemove}>
+                    Remove
+                </Button>
+            ) : null}
         </div>
     )
 
