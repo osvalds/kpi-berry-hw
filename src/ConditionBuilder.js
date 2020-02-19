@@ -37,14 +37,15 @@ const blankCondition = {
 };
 
 const ConditionBuilder = ({enums}) => {
-    const [customers, setCustomers] = useState({});
+    const [customers, setCustomers] = useState([]);
     const [logicalOperator, setLogicalOperator] = useState("or");
     const [conditions, setConditions] = useState([blankCondition]);
-
+    const [isLoading, setIsLoading] = useState(true);
     const availableProperties = staticProperties.concat(enums);
 
     useEffect(() => {
         const fetchCustomers = async () => {
+            setIsLoading(true);
             const result = await axios(
                 {
                     method: "post",
@@ -56,6 +57,7 @@ const ConditionBuilder = ({enums}) => {
                 })
             ;
             setCustomers(result.data);
+            setIsLoading(false);
         };
         fetchCustomers();
     }, [logicalOperator, conditions]);
@@ -141,7 +143,7 @@ const ConditionBuilder = ({enums}) => {
                             className="condition-builder__logic-select"
                             placeholder="Property"
                             value={logicalOperator}
-                            disabled={!allConditionsFilled(conditions)}
+                            disabled={!allConditionsFilled(conditions) || isLoading}
                             onChange={onLogicalOperatorChange}
                         >
                             {logicalOperatorOpts.map(item => (
@@ -160,20 +162,21 @@ const ConditionBuilder = ({enums}) => {
                                          onEqualityChange={handleEqualityChange(index)}
                                          onValueChange={handleValueChange(index)}
                                          condition={condition}
+                                         isLoading={isLoading}
                                          onRemove={() => onRemove(index)}/>
                     })}
                     <div className="search-button">
                         <Button
                             type="primary"
                             onClick={addCondition}
-                            disabled={!allConditionsFilled(conditions)}
+                            disabled={!allConditionsFilled(conditions) || isLoading}
                             icon="plus">
                             Add Condition
                         </Button>
                     </div>
                 </div>
             </div>
-            <SearchResults results={customers}/>
+            <SearchResults results={customers} isLoading={isLoading}/>
         </Fragment>)
 };
 

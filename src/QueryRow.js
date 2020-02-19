@@ -35,11 +35,12 @@ const getEqualityOptions = (selectedProperty, availableProperties) => {
     }
 };
 
-const EqualitySelect = ({condition, availableProperties, onEqualityChange}) => {
+const EqualitySelect = ({condition, availableProperties, onEqualityChange, isLoading}) => {
     if (condition.property) {
         return (
             <Select
                 className="query-row__select"
+                disabled={isLoading}
                 value={condition.equality}
                 onChange={onEqualityChange}
                 placeholder="Equality"
@@ -77,12 +78,13 @@ const getValueOptions = (selectedProperty, availableProperties) => {
     }
 };
 
-const ValueSelect = ({condition, availableProperties, onValueChange}) => {
+const ValueSelect = ({condition, availableProperties, onValueChange, isLoading}) => {
     if (!condition.property) {
         return null;
     } else if (condition.property === "age") {
         return (
             <Slider range={true}
+                    disabled={isLoading}
                     onAfterChange={onValueChange}
                     defaultValue={condition.propertyValue}/>
         )
@@ -90,6 +92,7 @@ const ValueSelect = ({condition, availableProperties, onValueChange}) => {
         return (
             <Select
                 className="query-row__select"
+                disabled={isLoading}
                 value={condition.propertyValue != null ? condition.propertyValue : undefined}
                 onChange={onValueChange}
                 placeholder="Value"
@@ -105,11 +108,12 @@ const ValueSelect = ({condition, availableProperties, onValueChange}) => {
     }
 };
 
-const QueryRow = ({availableProperties, condition, onPropertyChange, onEqualityChange, onValueChange, onRemove}) => {
+const QueryRow = ({availableProperties, condition, onPropertyChange, onEqualityChange, onValueChange, onRemove, isLoading}) => {
     return (
         <div className="query-row">
             <Select
                 className="query-row__select"
+                disabled={isLoading}
                 placeholder="Property"
                 // select element's placeholder works only with undefined
                 value={condition.property ? condition.property : undefined}
@@ -124,10 +128,12 @@ const QueryRow = ({availableProperties, condition, onPropertyChange, onEqualityC
             </Select>
 
             <EqualitySelect condition={condition}
+                            isLoading={isLoading}
                             availableProperties={availableProperties}
                             onEqualityChange={onEqualityChange}/>
 
             <ValueSelect condition={condition}
+                         isLoading={isLoading}
                          availableProperties={availableProperties}
                          onValueChange={onValueChange}/>
             <Button disabled={onRemove === null} onClick={onRemove} icon="close" className="query-row__remove"/>

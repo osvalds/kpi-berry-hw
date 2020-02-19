@@ -72,10 +72,6 @@ def enum_lambda(condition):
 
 
 def converted_condition(condition):
-    print("______")
-    print(condition["property"])
-    print(condition["property"] == "marketing_consent")
-
     if condition["property"] == "marketing_consent":
         return marketing_consent_lambda(condition)
     elif condition["property"] == "age":
@@ -90,9 +86,6 @@ def customers():
     json_url = os.path.join(SITE_ROOT, "static", "mock_data.json")
     all_customers = json.load(open(json_url))
 
-    print(type(all_customers))
-    print(all_customers[0])
-
     request_data = json.loads(request.data)
 
     logical_operator = request_data["logicalOperator"]
@@ -101,16 +94,13 @@ def customers():
 
     validated_conditions = filter_conditions(conditions)
 
-    print("filtered conditions")
-    print(validated_conditions)
-
     filtered_customers = []
 
     for condition in validated_conditions:
         filtered_stuff = list(filter(converted_condition(condition), all_customers))
         dset = set()
-        for f in filtered_stuff:
-            dset.add(json.dumps(f, sort_keys=True))
+        for item in filtered_stuff:
+            dset.add(json.dumps(item, sort_keys=True))
         filtered_customers.append(dset);
 
     print(filtered_customers)
@@ -118,8 +108,6 @@ def customers():
 
     if not validated_conditions:
         return jsonify(all_customers)
-    # elif len(validated_conditions) == 1:
-    #     return jsonify(filtered_customers[0])
     else:
         if logical_operator == "or":
             results = set().union(*filtered_customers)
@@ -129,9 +117,11 @@ def customers():
             return jsonify(final_results)
 
         else:
-            print("LOGICAL AND")
-
-            return jsonify([])
+            results = filtered_customers[0].intersection(*filtered_customers)
+            final_results = []
+            for r in results:
+                final_results.append(json.loads(r))
+            return jsonify(final_results)
 
 
 if __name__ == '__main__':

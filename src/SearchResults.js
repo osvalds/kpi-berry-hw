@@ -34,16 +34,12 @@ const columns = [
     }
 ];
 
-const SearchResults = ({results}) => {
-    if (Object.keys(results).length !== 0) {
-        return <Table title={() => `Totals results: ${results.length}`}
-                      dataSource={results}
-                      columns={columns}
-                      rowKey="id"/>
-    } else {
-        return <Spin size="large"/>
-    }
-
+const SearchResults = ({results, isLoading}) => {
+    return <Table title={() => `Totals results: ${results.length}`}
+                  dataSource={results}
+                  columns={columns}
+                  loading={isLoading}
+                  rowKey="id"/>
 };
 
 export default SearchResults
